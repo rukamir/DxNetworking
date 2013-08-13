@@ -31,6 +31,18 @@ public:
 	Entity*		CreateBall();
 	Entity*		CreateTiger();
 
+	// General Menu Controls
+	bool IsOverMenuButton(LPCSTR buttonTitle);
+	SpriteElements* GetMenuElemByTitle(LPCSTR buttonTitle);
+
+	// Server Menu
+	void CreateServerMenu();
+	void DeleteServerMenu();
+
+	// Network Controls
+	void JoinGame(short gameId);
+	void QuitGame();
+
 private:
 	int m_iNVID;								// next valid ID
 

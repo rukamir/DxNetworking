@@ -78,6 +78,43 @@ Entity* WorldManager::CreateBall(){
 	return ent;
 }
 
+bool WorldManager::IsOverMenuButton(LPCSTR buttonTitle){
+	return myMenu->GetElemByTitle(buttonTitle)->IsOver(ghWnd);
+}
+
+SpriteElements* WorldManager::GetMenuElemByTitle(LPCSTR buttonTitle){
+	return myMenu->GetElemByTitle(buttonTitle);
+}
+
+void WorldManager::CreateServerMenu(){
+	myMenu	=	new MenuObj(9999);
+	myMenu->SetText("ServerMenu");
+	myMenu->AddButton("Server List", D3DXVECTOR2(5.0f, 5.0f));
+	myMenu->AddButton("Game 1", D3DXVECTOR2(5.0f, 35.0f));
+	myMenu->AddPlayerCount("Game1Count", D3DXVECTOR2(250.0f, 35.0f));
+	myMenu->AddButton("Game 2", D3DXVECTOR2(5.0f, 65.0f));
+	myMenu->AddPlayerCount("Game2Count", D3DXVECTOR2(250.0f, 65.0f));
+	myMenu->AddButton("Game 3", D3DXVECTOR2(5.0f, 95.0f));
+	myMenu->AddPlayerCount("Game3Count", D3DXVECTOR2(250.0f, 95.0f));
+	myMenu->AddButton("Game 4", D3DXVECTOR2(5.0f, 125.0f));
+	myMenu->AddPlayerCount("Game4Count", D3DXVECTOR2(250.0f, 125.0f));
+
+	myMenu->SetPosition(D3DXVECTOR2(100.0f, 5.0f));
+}
+
+
+void WorldManager::DeleteServerMenu(){
+	delete myMenu;
+}
+
+void WorldManager::JoinGame(short gameId){
+	m_NetControl->JoinGame(gameId);
+}
+
+void WorldManager::QuitGame(){
+	m_NetControl->QuiteGame();
+}
+
 int WorldManager::GetNVID()
 {
 	m_iNVID++;

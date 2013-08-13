@@ -126,7 +126,7 @@ void D3DApp::ChangeState(int num)
 	switch(num)
 	{
 	case 1:
-		this->pFSM->ChangeState( new Demo1() );
+		this->pFSM->ChangeState( new ServerLobby() );
 		break;
 	case 2:
 		this->pFSM->ChangeState( new Demo2() );

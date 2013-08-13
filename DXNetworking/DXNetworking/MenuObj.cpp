@@ -4,12 +4,17 @@
 MenuObj::MenuObj(int id)
 	: SpriteElements(id)
 {
-
 }
 
 
 MenuObj::~MenuObj(void)
 {
+	for (const auto spt: m_vObjInMenu){
+		delete spt;
+	}
+	m_vObjInMenu.clear();
+	m_mObjInMenu.clear();
+	newElem = NULL;
 }
 
 SpriteElements* MenuObj::GetElemByTitle(LPCSTR title){
@@ -51,7 +56,7 @@ void MenuObj::Update(float dt)
 
 void MenuObj::Draw(ID3DXSprite* SpriteInterface, ID3DXFont* FontInterface)
 {
-	for (auto spt: m_vObjInMenu)
+	for (const auto spt: m_vObjInMenu)
 	{
 		spt->Draw(SpriteInterface, FontInterface);
 	}
