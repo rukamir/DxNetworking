@@ -90,6 +90,7 @@ void WorldManager::CreateServerMenu(){
 	myMenu	=	new MenuObj(9999);
 	myMenu->SetText("ServerMenu");
 	myMenu->AddButton("Server List", D3DXVECTOR2(5.0f, 5.0f));
+	myMenu->AddButton("Players", D3DXVECTOR2(250.0f, 5.0f));
 	myMenu->AddButton("Game 1", D3DXVECTOR2(5.0f, 35.0f));
 	myMenu->AddPlayerCount("Game1Count", D3DXVECTOR2(250.0f, 35.0f));
 	myMenu->AddButton("Game 2", D3DXVECTOR2(5.0f, 65.0f));

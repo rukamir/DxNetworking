@@ -14,6 +14,7 @@ IntState::~IntState()
 
 void IntState::InitializeState(D3DApp* app)
 {
+
 }
 void IntState::UpdateScene(D3DApp* app, float dt)
 {
@@ -66,19 +67,19 @@ void ServerLobby::UpdateScene(D3DApp* app, float dt)
 	if(gDInput->mouseButtonDown(0)){
 		if(WMI->IsOverMenuButton("Game 1")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game1Count"))->SetPlayerCount(1);
-			WMI->JoinGame(1);
+			//WMI->JoinGame(1);
 		}
 		if(WMI->IsOverMenuButton("Game 2")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game2Count"))->SetPlayerCount(1);
-			WMI->JoinGame(2);
+			//WMI->JoinGame(2);
 		}
 		if(WMI->IsOverMenuButton("Game 3")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game3Count"))->SetPlayerCount(1);
-			WMI->JoinGame(3);
+			//WMI->JoinGame(3);
 		}
 		if(WMI->IsOverMenuButton("Game 4")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game4Count"))->SetPlayerCount(1);
-			WMI->JoinGame(4);
+			//WMI->JoinGame(4);
 		}
 	}
 }

@@ -5,10 +5,6 @@
 #include "NetClient.h"
 #include "ThreadController.h"
 
-//#pragma comment (lib, "Ws2_32.lib")
-//#pragma comment (lib, "Mswsock.lib")
-//#pragma comment (lib, "AdvApi32.lib")
-
 NetClient::NetClient(){
     SOCKET ConnectSocket = INVALID_SOCKET;
     result = NULL;
