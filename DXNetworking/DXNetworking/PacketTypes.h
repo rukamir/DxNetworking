@@ -19,17 +19,6 @@
 #define SERVER_GAME_OVER			0x0800
 #define SERVER_CLIENT_QUIT_GAME		0x1000
 
-
-struct Packet {
-	Packet(){}
-	Packet(short iD, float xVal, float yVal){
-		id=iD; x=xVal; y=yVal;
-	}
-	short id;
-	float x, y;
-};
-
-
 #ifndef PACKETS_H
 #define PACKETS_H
 

@@ -42,4 +42,5 @@ public:
 };
 
 extern LPDIRECT3DDEVICE9 gD3DDev;
+extern HWND* ghWnd;
 #endif

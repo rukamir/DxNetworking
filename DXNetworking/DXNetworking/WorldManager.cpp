@@ -103,7 +103,7 @@ void WorldManager::Update(float dt)
 	}
 
 	static float counter = 0.0f;
-	static Packet* packet = NULL;
+	//static Packet* packet = NULL;
 
 	//// every two seconds
 	//if (counter > 2.0f){

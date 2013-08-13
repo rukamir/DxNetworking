@@ -31,6 +31,10 @@ protected:
 	ElementType				m_elementType;
 	D3DXVECTOR2*			m_parentPos;
 	D3DXMATRIX				mat;
+
+	float			x, y;
+	POINT			clickPos, mouse;
+	//static string			clickedText;
 public:
 	//SprtElemShPtr			m_parent;
 	SpriteElements(){}
@@ -79,6 +83,35 @@ public:
 		}else{
 			m_position += move;
 		}
+	}
+
+	virtual bool IsOver(HWND *win){
+		static D3DXVECTOR2 posPlusDblCenter;
+		//if(clicked)
+		//{
+			GetCursorPos(&mouse);
+			ScreenToClient(*win, &mouse);
+			clickPos = mouse;//hold values for debug
+
+			x = (float)clickPos.x;//gDInput->mouseAX();
+			y = (float)clickPos.y;//gDInput->mouseAY();
+			//testElem->SetPosition(D3DXVECTOR2( x, y));
+			//testElem->SetScale( D3DXVECTOR2(1.25, 1.25) );
+
+			//should get bottom right corner
+			posPlusDblCenter = m_position + (m_center+m_center);
+			if(    clickPos.x < posPlusDblCenter.x		//click less than bottom right
+				&& clickPos.x > m_position.x	//click more than pos
+				&& clickPos.y < posPlusDblCenter.y		//
+				&& clickPos.y > m_position.y	//
+				)
+			{
+				return true;
+				//if((*i)->GetId() == id)
+				//	return true;
+			}
+		//}
+			return false;
 	}
 
 	virtual void Draw(ID3DXSprite* SpriteInterface, ID3DXFont* FontInterface){

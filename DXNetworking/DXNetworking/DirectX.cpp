@@ -2,12 +2,13 @@
 #include "d3dUtil.h"
 
 LPDIRECT3DDEVICE9 gD3DDev = 0;
+HWND *ghWnd = 0;
 
 DirectX::DirectX()
 {
 	m_bVsync		= true;
 	m_pD3DObject	= 0;
-	m_pD3Device	= 0;
+	m_pD3Device		= 0;
 }
 
 DirectX::~DirectX()
@@ -36,6 +37,7 @@ void DirectX::InitializeDirect3D(HWND hWnd, HINSTANCE& hInst, bool bWindowed)
 	md3dPP.PresentationInterval       = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	m_hWnd = hWnd;
+	ghWnd = &m_hWnd;
 	m_pD3DObject = Direct3DCreate9(D3D_SDK_VERSION);
 
 	// Get window size

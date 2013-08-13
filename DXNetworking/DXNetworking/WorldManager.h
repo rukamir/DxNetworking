@@ -15,13 +15,13 @@ class NetworkController;
 class WorldManager
 {
 private:
-	NetworkController			*m_NetControl;
 	std::vector<Entity*>		m_vEntities;
 	Entity*						ent;
 
 public:
+	NetworkController			*m_NetControl;
 	SpriteManager				*m_SpriteMan;
-	Obj3D						*myObj;
+	//Obj3D						*myObj;
 	MenuObj						*myMenu;
 	WorldManager();
 	~WorldManager();

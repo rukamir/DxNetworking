@@ -20,13 +20,13 @@ public:
 	void LeaveState(D3DApp*);
 };
 
-class Demo1
+class ServerLobby
 	: public State<D3DApp>
 {
 protected:
 public:
-	Demo1();
-	~Demo1();
+	ServerLobby();
+	~ServerLobby();
 
 	void InitializeState(D3DApp*);
 	void UpdateScene(D3DApp*, float dt);

@@ -5,6 +5,7 @@
 #include "WorldManager.h"
 #include "Tiger.h"
 #include "LinkedObjs.h"
+//#include "NetworkController.h"
 
 IntState::IntState()
 {
@@ -16,6 +17,7 @@ IntState::~IntState()
 
 void IntState::InitializeState(D3DApp* app)
 {
+	//WMI->m_NetControl->JoinServer();
 }
 void IntState::UpdateScene(D3DApp* app, float dt)
 {
@@ -56,26 +58,31 @@ void IntState::LeaveState(D3DApp* app)
 }
 
 //********************************************************
-//3DObject Demo State
+// Server Lobby State
 //********************************************************
-Demo1::Demo1()
+ServerLobby::ServerLobby()
 {
 }
 
-Demo1::~Demo1()
+ServerLobby::~ServerLobby()
 {
 }
 
-void Demo1::InitializeState(D3DApp* app)
+void ServerLobby::InitializeState(D3DApp* app)
 {
 	WMI->myMenu	=	new MenuObj(9999);
-	WMI->myMenu->AddButton("Title", D3DXVECTOR2(5.0f, 5.0f));
-	WMI->myMenu->SetPosition(D3DXVECTOR2(5.0f, 5.0f));
+	WMI->myMenu->AddButton("Server List", D3DXVECTOR2(5.0f, 5.0f));
+	WMI->myMenu->AddButton("Game 1", D3DXVECTOR2(5.0f, 35.0f));
+	WMI->myMenu->AddPlayerCount("Game1Count", D3DXVECTOR2(250.0f, 35.0f));
+	WMI->myMenu->AddButton("Game 2", D3DXVECTOR2(5.0f, 65.0f));
+	WMI->myMenu->AddPlayerCount("Game2Count", D3DXVECTOR2(250.0f, 65.0f));
+
+	WMI->myMenu->SetPosition(D3DXVECTOR2(100.0f, 5.0f));
 	WMI->m_SpriteMan->SetWindow( app->GetWindow() );
 	WMI->m_SpriteMan->AddSprite(WMI->myMenu);
 }
 
-void Demo1::UpdateScene(D3DApp* app, float dt)
+void ServerLobby::UpdateScene(D3DApp* app, float dt)
 {
 	//CAM->Update();
 	WMI->Update(dt);
@@ -84,8 +91,18 @@ void Demo1::UpdateScene(D3DApp* app, float dt)
 	{
 		app->ChangeState(2);
 	}
+
+	// if left click
+	if(gDInput->mouseButtonDown(0)){
+		if (WMI->myMenu->GetElemByTitle("Game 1")->IsOver(ghWnd)){
+			((PlayerDisplayCount*)WMI->myMenu->GetElemByTitle("Game1Count"))->SetPlayerCount(1);
+		}
+		if (WMI->myMenu->GetElemByTitle("Game 2")->IsOver(ghWnd)){
+			((PlayerDisplayCount*)WMI->myMenu->GetElemByTitle("Game2Count"))->SetPlayerCount(1);
+		}
+	}
 }
-void Demo1::RenderScene(D3DApp* app)
+void ServerLobby::RenderScene(D3DApp* app)
 {
 	WMI->Render();
 	//WMI->m_SpriteMan->Begin();
@@ -93,15 +110,15 @@ void Demo1::RenderScene(D3DApp* app)
 	//WMI->m_SpriteMan->End();
 }
 
-void Demo1::OnResetDevice(D3DApp* app)
+void ServerLobby::OnResetDevice(D3DApp* app)
 {
 }
 
-void Demo1::OnLostDevice(D3DApp* app)
+void ServerLobby::OnLostDevice(D3DApp* app)
 {
 }
 
-void Demo1::LeaveState(D3DApp* app)
+void ServerLobby::LeaveState(D3DApp* app)
 {
 	WMI->ResetWorldManager();
 }

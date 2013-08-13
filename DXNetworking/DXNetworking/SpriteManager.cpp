@@ -236,13 +236,13 @@ LPD3DXSPRITE* SpriteManager::GetSpriteObj()
 //	return &m_menu;
 //}
 
-SprtElemShPtr SpriteManager::GetSpriteElement(int id)
+SpriteElements* SpriteManager::GetSpriteElement(int id)
 {
 	//if (m_vectSprElem.size() > 0)
 	//{
 	//	VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
 	//	for (;i != m_vectSprElem.end(); i++)
-		for (auto sprt: m_vectSprElem)
+		for (auto sprt: m_vSprtElems)
 		{
 			if((sprt)->GetId() == id)
 			{
@@ -255,13 +255,13 @@ SprtElemShPtr SpriteManager::GetSpriteElement(int id)
 	return NULL;
 }
 
-SprtElemShPtr SpriteManager::GetElementByText(LPCSTR text)
+SpriteElements* SpriteManager::GetElementByText(LPCSTR text)
 {
 	//if (m_vectSprElem.size() > 0)
 	//{
 		//VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
 		//for (;i != m_vectSprElem.end(); i++)
-		for (auto sprt: m_vectSprElem)
+		for (auto sprt: m_vSprtElems)
 		{
 			if((sprt)->GetText() == text)
 			{
@@ -279,30 +279,30 @@ void SpriteManager::Draw()
 		//VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
 		//for (;i != m_vectSprElem.end(); i++)
 	for (auto sprt: m_vSprtElems)
-		{
-			//(*i)->Draw(this->m_pSpriteObj, this->m_pD3DFont);
-			sprt->Draw(this->m_pSpriteObj, this->m_pD3DFont);
+	{
+		//(*i)->Draw(this->m_pSpriteObj, this->m_pD3DFont);
+		sprt->Draw(this->m_pSpriteObj, this->m_pD3DFont);
 
-			//D3DXMATRIX mat2;
-			//D3DXMatrixTransformation2D(&mat2, &(*i)->GetCenter(), /*(*i)->GetScaleRotation()*/NULL, &(*i)->GetScale(),&(*i)->GetCenter(),(*i)->GetRotation(), 
-			//	&(*i)->GetPosition());
-			//m_pSpriteObj->SetTransform(&mat2);
-			//m_pSpriteObj->Draw((*i)->GetTexture(), (*i)->GetRect(), NULL/*(*i)->GetCenter()*/, NULL/*(*i)->GetPosition()*/, D3DCOLOR_XRGB(255, 255, 255));
-			//m_pD3DFont->DrawText(m_pSpriteObj, (*i)->GetText(),-1,NULL,DT_CENTER|DT_VCENTER,D3DCOLOR_XRGB(0,0,0));
-		}
+		//D3DXMATRIX mat2;
+		//D3DXMatrixTransformation2D(&mat2, &(*i)->GetCenter(), /*(*i)->GetScaleRotation()*/NULL, &(*i)->GetScale(),&(*i)->GetCenter(),(*i)->GetRotation(), 
+		//	&(*i)->GetPosition());
+		//m_pSpriteObj->SetTransform(&mat2);
+		//m_pSpriteObj->Draw((*i)->GetTexture(), (*i)->GetRect(), NULL/*(*i)->GetCenter()*/, NULL/*(*i)->GetPosition()*/, D3DCOLOR_XRGB(255, 255, 255));
+		//m_pD3DFont->DrawText(m_pSpriteObj, (*i)->GetText(),-1,NULL,DT_CENTER|DT_VCENTER,D3DCOLOR_XRGB(0,0,0));
+	}
 	//}
 }
 
 void SpriteManager::Update(float dt)
 {
-	if (m_vectSprElem.size() > 0)
-	{
-		VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
-		for (;i != m_vectSprElem.end(); i++)
+	//if (m_vectSprElem.size() > 0)
+	//{
+		VectSpritElem::iterator i = m_vSprtElems.begin();
+		for (;i != m_vSprtElems.end(); i++)
 		{
 			(*i)->Update(dt);
 		}
-	}
+	//}
 
 	//m_menu.Update(dt);
 }
@@ -335,7 +335,7 @@ void SpriteManager::ClearAllSprites()
 	//{
 	//	delete *i;
 	//}
-	m_vectSprElem.clear();
+	m_vSprtElems.clear();
 }
 
 void SpriteManager::AddSprite(SpriteElements *addThis)
@@ -498,120 +498,120 @@ void SpriteManager::AddSprite(SpriteElements *addThis)
 //	//m_pD3DFSPDisplay->DrawText(m_pSpriteObj, m_FpsElement->GetText()/*Result.c_str()*/, -1, 0, 0, fontColor );
 //}
 
-bool SpriteManager::OnClick3(int id)
-{
-	static float x=0;
-	static float y=0;
-	static POINT clickPos;
-	static string clickedText;
-	static SpriteElements* testElem = 0;// = this->GetSpriteElement(2);
-	//static D3DXVECTOR2 clickPoint;
-
-	//Get position of mouse on the screen
-	static POINT mouse;
-
-
-
-	static D3DXVECTOR2 posPlusDblCenter;
-	static bool debounce = false;
-
-	//on left click
-	if(gDInput->mouseButtonDown(0))
-	{
-//if(!debounce)
+//bool SpriteManager::OnClick3(int id)
 //{
-//	debounce = true;
-		GetCursorPos(&mouse);
-		ScreenToClient(*m_hWnd, &mouse);
-		clickPos = mouse;//hold values for debug
-
-		x = (float)clickPos.x;//gDInput->mouseAX();
-		y = (float)clickPos.y;//gDInput->mouseAY();
-		//testElem->SetPosition(D3DXVECTOR2( x, y));
-		//testElem->SetScale( D3DXVECTOR2(1.25, 1.25) );
-
-		//check for sprites within 25 pxl from mouse click
-		if (m_vectSprElem.size() > 0)
-		{
-			VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
-			for (;i != m_vectSprElem.end(); i++)
-			{
-				//should get bottom right corner
-				posPlusDblCenter = (*i)->GetPosition() + ((*i)->GetCenter()+(*i)->GetCenter());
-				if(    clickPos.x < posPlusDblCenter.x		//click less than bottom right
-					&& clickPos.x > (*i)->GetPosition().x	//click more than pos
-					&& clickPos.y < posPlusDblCenter.y		//
-					&& clickPos.y > (*i)->GetPosition().y	//
-					)
-				{
-					if((*i)->GetId() == id)
-						return true;
-				}
-			}
-		}
-
+//	static float x=0;
+//	static float y=0;
+//	static POINT clickPos;
+//	static string clickedText;
+//	static SpriteElements* testElem = 0;// = this->GetSpriteElement(2);
+//	//static D3DXVECTOR2 clickPoint;
+//
+//	//Get position of mouse on the screen
+//	static POINT mouse;
+//
+//
+//
+//	static D3DXVECTOR2 posPlusDblCenter;
+//	static bool debounce = false;
+//
+//	//on left click
+//	if(gDInput->mouseButtonDown(0))
+//	{
+////if(!debounce)
+////{
+////	debounce = true;
+//		GetCursorPos(&mouse);
+//		ScreenToClient(*m_hWnd, &mouse);
+//		clickPos = mouse;//hold values for debug
+//
+//		x = (float)clickPos.x;//gDInput->mouseAX();
+//		y = (float)clickPos.y;//gDInput->mouseAY();
+//		//testElem->SetPosition(D3DXVECTOR2( x, y));
+//		//testElem->SetScale( D3DXVECTOR2(1.25, 1.25) );
+//
+//		//check for sprites within 25 pxl from mouse click
+//		if (m_vSprtElems.size() > 0)
+//		{
+//			VectSpritElem::iterator i = m_vSprtElems.begin();
+//			for (;i != m_vSprtElems.end(); i++)
+//			{
+//				//should get bottom right corner
+//				posPlusDblCenter = (*i)->GetPosition() + ((*i)->GetCenter()+(*i)->GetCenter());
+//				if(    clickPos.x < posPlusDblCenter.x		//click less than bottom right
+//					&& clickPos.x > (*i)->GetPosition().x	//click more than pos
+//					&& clickPos.y < posPlusDblCenter.y		//
+//					&& clickPos.y > (*i)->GetPosition().y	//
+//					)
+//				{
+//					if((*i)->GetId() == id)
+//						return true;
+//				}
+//			}
+//		}
+//
+////}
+//	}
+//	else
+//	{
+//		debounce = false;
+//		return false;
+//	}
+//	return false;
 //}
-	}
-	else
-	{
-		debounce = false;
-		return false;
-	}
-	return false;
-}
 
 
-bool SpriteManager::OnOver(int id)
-{
-	static float x=0;
-	static float y=0;
-	static POINT something;
-	static string clickedText;
-	static SpriteElements* testElem = 0;
-	static POINT mouse;
-
-	static D3DXVECTOR2 posPlusDblCenter;
-
-	//on left click
-	//if(gDInput->mouseButtonDown(0))
-	//{
-		GetCursorPos(&mouse);
-		ScreenToClient(*m_hWnd, &mouse);
-		something = mouse;//hold values for debug
-
-		x = (float)something.x;//gDInput->mouseAX();
-		y = (float)something.y;//gDInput->mouseAY();
-		//testElem->SetPosition(D3DXVECTOR2( x, y));
-		//testElem->SetScale( D3DXVECTOR2(1.25, 1.25) );
-
-		//check for sprites within 25 pxl from mouse click
-		if (m_vectSprElem.size() > 0)
-		{
-			VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
-			for (;i != m_vectSprElem.end(); i++)
-			{
-				//should get bottom right corner
-				posPlusDblCenter = (*i)->GetPosition() + ((*i)->GetCenter()+(*i)->GetCenter());
-				if( //posPlusDblCenter > D3DXVECTOR2(something.x, something.y)
-					//&& (*i)->GetPosition() < D3DXVECTOR2(something.x, something.y)
-					//MeasureDistance(D3DXVECTOR2(something.x, something.y), (*i)->GetPosition(), 40)
-					something.x < posPlusDblCenter.x && something.x > (*i)->GetPosition().x
-					&& something.y < posPlusDblCenter.y && something.y > (*i)->GetPosition().y
-					)
-				{
-					if((*i)->GetId() == id)
-						return true;
-				}
-			}
-		}
-		return false;
-
-	//}
-	//else
-	//{
-	//	return false;
-	//}
-}
+//bool SpriteManager::OnOver(int id)
+//{
+//	static float x=0;
+//	static float y=0;
+//	static POINT something;
+//	static string clickedText;
+//	static SpriteElements* testElem = 0;
+//	static POINT mouse;
+//
+//	static D3DXVECTOR2 posPlusDblCenter;
+//
+//	//on left click
+//	//if(gDInput->mouseButtonDown(0))
+//	//{
+//		GetCursorPos(&mouse);
+//		ScreenToClient(*m_hWnd, &mouse);
+//		something = mouse;//hold values for debug
+//
+//		x = (float)something.x;//gDInput->mouseAX();
+//		y = (float)something.y;//gDInput->mouseAY();
+//		//testElem->SetPosition(D3DXVECTOR2( x, y));
+//		//testElem->SetScale( D3DXVECTOR2(1.25, 1.25) );
+//
+//		//check for sprites within 25 pxl from mouse click
+//		if (m_vectSprElem.size() > 0)
+//		{
+//			VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
+//			for (;i != m_vectSprElem.end(); i++)
+//			{
+//				//should get bottom right corner
+//				posPlusDblCenter = (*i)->GetPosition() + ((*i)->GetCenter()+(*i)->GetCenter());
+//				if( //posPlusDblCenter > D3DXVECTOR2(something.x, something.y)
+//					//&& (*i)->GetPosition() < D3DXVECTOR2(something.x, something.y)
+//					//MeasureDistance(D3DXVECTOR2(something.x, something.y), (*i)->GetPosition(), 40)
+//					something.x < posPlusDblCenter.x && something.x > (*i)->GetPosition().x
+//					&& something.y < posPlusDblCenter.y && something.y > (*i)->GetPosition().y
+//					)
+//				{
+//					if((*i)->GetId() == id)
+//						return true;
+//				}
+//			}
+//		}
+//		return false;
+//
+//	//}
+//	//else
+//	//{
+//	//	return false;
+//	//}
+//}
 
 
 

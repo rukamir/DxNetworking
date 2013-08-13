@@ -16,7 +16,7 @@ protected:
 	LPDIRECT3DDEVICE9		m_pDevice;
 	ID3DXFont*				m_pD3DFont;
 	LPD3DXSPRITE			m_pSpriteObj;
-	VectSprtElemShPtrs		m_vectSprElem;
+	//VectSprtElemShPtrs		m_vectSprElem;
 	VectSpritElem			m_vSprtElems;
 
 	//MenuInterface			m_menu;
@@ -60,10 +60,10 @@ public:
 
 	LPD3DXSPRITE* GetSpriteObj();
 	//MenuInterface* GetMenuObject();
-	SprtElemShPtr GetSpriteElement(int id);
+	SpriteElements* GetSpriteElement(int id);
 
 
-	SprtElemShPtr GetElementByText(LPCSTR text);
+	SpriteElements* GetElementByText(LPCSTR text);
 
 
 	void Draw();//float dt);
@@ -80,8 +80,8 @@ public:
 	void CreateMenuButton(int id, D3DXVECTOR2 center, D3DXVECTOR2 pos, D3DXVECTOR2 velo, 
 		LPCSTR text, D3DCOLOR textColor, D3DXVECTOR2 scale, float rotation, LPCSTR SrcFile);
 
-	bool OnClick3(int id);
-	bool OnOver(int id);
+	//bool OnClick3(int id);
+	//bool OnOver(int id);
 
 	SprtElemShPtr m_FpsElement;
 	//bool CreateFpsDisplay();
