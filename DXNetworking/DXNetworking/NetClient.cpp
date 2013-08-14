@@ -153,7 +153,7 @@ void NetClient::SetBuffer(void* msg)
 void NetClient::SendBuffer()
 {
 	// Send an initial buffer
-    error = send( m_sClientSock, (char*)sendbuf, sizeof(sendbuf), 0 );
+    error = send( m_sClientSock, (char*)sendbuf, 45/*sizeof(char)*/, 0 );
     if (error == SOCKET_ERROR) {
         printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(m_sClientSock);

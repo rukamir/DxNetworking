@@ -14,11 +14,11 @@ private:
 	NetClient*						m_Client;
 	char							m_sClientId;
 	char							m_sClientName[30];
-	char							g1, g2, g3, g4; // Holds players per game
 	std::map<short, Entity*>		m_mEntMap;
 
 	char							m_sCurGameId;
 public:
+	char							lobby, g1, g2, g3, g4; // Holds players per game
 	NetworkController(void);
 	~NetworkController(void);
 
@@ -28,6 +28,12 @@ public:
 	void QuiteGame();
 	void QuiteServer();
 	void SendPlayerMove(char moveFlags);
+
+	void Server_SyncLobby();
+	void Server_JoinGame();
+	void Server_SyncGame();
+
+
 
 	void TestServerPackets();
 

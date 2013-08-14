@@ -36,13 +36,13 @@ public:
 	void LeaveState(D3DApp*);
 };
 
-class Demo2
+class GameLobby
 	: public State<D3DApp>
 {
 protected:
 public:
-	Demo2();
-	~Demo2();
+	GameLobby();
+	~GameLobby();
 
 	void InitializeState(D3DApp*);
 	void UpdateScene(D3DApp*, float dt);

@@ -29,8 +29,9 @@ void TextureManager::LoadAllTextures(LPDIRECT3DDEVICE9 d3ddev)
 	LoadTexture(d3ddev, &water, "Textures/s13.jpg");
 	LoadTexture(d3ddev, &tS15, "Textures/download.bmp");
 
+	//LoadTexture(d3ddev, &button, "Textures/download.bmp");
 	//LoadTexture(d3ddev, &button, "Textures/ButtonBlankGrey.png");
-	LoadTexture(d3ddev, &button, "Textures/s13.jpg");
+	//LoadTexture(d3ddev, &button, "Textures/s13.jpg");
 
 	////drop down menu
 	//LoadTexture(d3ddev, &DropDownItem, "GUI/ButtonDropDownItem.png");

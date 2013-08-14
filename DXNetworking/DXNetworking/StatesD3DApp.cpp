@@ -18,7 +18,6 @@ void IntState::InitializeState(D3DApp* app)
 }
 void IntState::UpdateScene(D3DApp* app, float dt)
 {
-
 	app->ChangeState(1);
 }
 void IntState::RenderScene(D3DApp* app)
@@ -57,9 +56,10 @@ void ServerLobby::InitializeState(D3DApp* app)
 
 void ServerLobby::UpdateScene(D3DApp* app, float dt)
 {
+	static bool enterGameLobby = false;
 	WMI->Update(dt);
 
-	if (gDInput->keyDown(DIK_2)){
+	if (gDInput->keyDown(DIK_1)){
 		app->ChangeState(2);
 	}
 
@@ -67,20 +67,34 @@ void ServerLobby::UpdateScene(D3DApp* app, float dt)
 	if(gDInput->mouseButtonDown(0)){
 		if(WMI->IsOverMenuButton("Game 1")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game1Count"))->SetPlayerCount(1);
-			//WMI->JoinGame(1);
-		}
+			WMI->JoinGame(1);
+			WMI->Server_SendPackets(6);
+			WMI->Server_SendPackets(8);
+			enterGameLobby = true;
+			//app->ChangeState(2);
+		} else
 		if(WMI->IsOverMenuButton("Game 2")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game2Count"))->SetPlayerCount(1);
-			//WMI->JoinGame(2);
-		}
+			WMI->JoinGame(2);
+			//enterGameLobby = true;
+			//app->ChangeState(3);
+		} else
 		if(WMI->IsOverMenuButton("Game 3")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game3Count"))->SetPlayerCount(1);
-			//WMI->JoinGame(3);
-		}
+			WMI->JoinGame(3);
+			enterGameLobby = true;
+			//app->ChangeState(3);
+		} else
 		if(WMI->IsOverMenuButton("Game 4")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game4Count"))->SetPlayerCount(1);
-			//WMI->JoinGame(4);
+			WMI->JoinGame(4);
+			enterGameLobby = true;
+			//app->ChangeState(3);
 		}
+	}
+
+	if(enterGameLobby){
+		app->ChangeState(2);
 	}
 }
 void ServerLobby::RenderScene(D3DApp* app)
@@ -98,25 +112,28 @@ void ServerLobby::OnLostDevice(D3DApp* app)
 
 void ServerLobby::LeaveState(D3DApp* app)
 {
-	//WMI->DeleteServerMenu();
 	WMI->m_SpriteMan->ClearAllSprites();
 	WMI->ResetWorldManager();
 }
 
 //***********************************************
-//                 Demo2
+//                 GameLobby
 //***********************************************
 
-Demo2::Demo2()
+GameLobby::GameLobby()
 {
 }
 
-Demo2::~Demo2()
+GameLobby::~GameLobby()
 {
 }
 
-void Demo2::InitializeState(D3DApp* app)
+void GameLobby::InitializeState(D3DApp* app)
 {
+	WMI->RemoveMenu();
+	WMI->CreateGameLobbyMenu();
+	WMI->m_SpriteMan->AddSprite(WMI->myMenu);
+
 	Entity* ent = WMI->CreateBall();
 	ent->SetPosition(D3DXVECTOR3(0.0f, -10.0f, 0.0f));
 
@@ -125,26 +142,30 @@ void Demo2::InitializeState(D3DApp* app)
 	tiger->SetPosition( D3DXVECTOR3(0.0f, -20.0f, 0.0f) );
 
 }
-void Demo2::UpdateScene(D3DApp* app, float dt)
+void GameLobby::UpdateScene(D3DApp* app, float dt)
 {
 	WMI->Update(dt);
 
+	if (gDInput->keyDown(DIK_1)){
+		app->ChangeState(1);
+	}
 }
-void Demo2::RenderScene(D3DApp* app)
+void GameLobby::RenderScene(D3DApp* app)
 {
 	WMI->Render();
 }
 
-void Demo2::OnResetDevice(D3DApp* app)
+void GameLobby::OnResetDevice(D3DApp* app)
 {
 }
 
-void Demo2::OnLostDevice(D3DApp* app)
+void GameLobby::OnLostDevice(D3DApp* app)
 {
 }
 
-void Demo2::LeaveState(D3DApp* app)
+void GameLobby::LeaveState(D3DApp* app)
 {
+	WMI->RemoveMenu();
 	WMI->ResetWorldManager();
 }
 

@@ -129,7 +129,7 @@ void D3DApp::ChangeState(int num)
 		this->pFSM->ChangeState( new ServerLobby() );
 		break;
 	case 2:
-		this->pFSM->ChangeState( new Demo2() );
+		this->pFSM->ChangeState( new GameLobby() );
 		break;
 	case 3:
 		//this->pFSM->ChangeState( new Demo3D() );

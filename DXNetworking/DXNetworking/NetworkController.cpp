@@ -5,11 +5,11 @@
 NetworkController::NetworkController(void)
 {
 	m_sClientId					=	5;
-	m_sCurGameId				=	4;
+	m_sCurGameId				=	0;
 	memcpy( m_sClientName, "Jimmy", 6);//				=	"Jimmy";
 	m_sClientName[sizeof(m_sClientName - 1)] = '\0';
 	m_Client = new NetClient();
-	m_Client->SetServIP("192.168.1.101");
+	//m_Client->SetServIP("192.168.1.101");
 	m_Client->Initialize();
 	m_Client->Connect();
 
@@ -54,7 +54,7 @@ void NetworkController::JoinGame(char GameId){
 
 	((ClientPacket_JoinGame*)ptr)->clientID		=	m_sClientId;
 	((ClientPacket_JoinGame*)ptr)->gameID		=	GameId;
-	((ClientPacket_JoinGame*)ptr)->packetID		=	2;
+	((ClientPacket_JoinGame*)ptr)->packetID		=	1;
 
 	m_Client->SetBuffer(ptr);
 	m_Client->SendBuffer();
@@ -136,8 +136,10 @@ void NetworkController::Update(float dt)
 			//void;
 			//void* myP = (void*)(new Packet(1, 5, 5));
 			//Packet myPack;
-			short id;
-			memcpy( &id, ptr, sizeof(char));
+			char packId;
+			memcpy( &packId, ptr, sizeof(char));
+			//int id = packId >> 4;
+			int id = packId;
 
 			// Switch to determine server packets received
 			switch (id)
@@ -147,6 +149,7 @@ void NetworkController::Update(float dt)
 				g2 = (0xf00 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 8;
 				g3 = (0xf0 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 4;
 				g4 = (0xf & ((ServerPacket_SyncLobby*)ptr)->playersInGame);
+				lobby = (((ServerPacket_SyncLobby*)ptr)->playersInLobby);
 				break;
 			case 7:
 				m_sCurGameId	=	((ServerPacket_ClientJoinGame*)ptr)->gameID;
@@ -169,7 +172,7 @@ void NetworkController::Update(float dt)
 			default:
 				break;
 			}
-			delete ptr;
+			//delete ptr;
 			ptr = NULL;
 		}
 		counter = 0.0f;
@@ -177,6 +180,58 @@ void NetworkController::Update(float dt)
 		counter += dt;
 	}
 
+}
+
+void NetworkController::Server_SyncLobby(){
+	static void *ptr = NULL;
+	ptr = new ServerPacket_SyncLobby();
+
+	((ServerPacket_SyncLobby*)ptr)->packetID	=	6;
+	((ServerPacket_SyncLobby*)ptr)->clientID	=	m_sClientId;
+	((ServerPacket_SyncLobby*)ptr)->playersInLobby = 0x10;
+	((ServerPacket_SyncLobby*)ptr)->playersInGame  = 0X00ff;
+
+	m_Client->SetBuffer(ptr);
+	m_Client->SendBuffer();
+
+	delete ptr;
+	ptr = NULL;
+}
+
+void NetworkController::Server_JoinGame(){
+	static void *ptr = NULL;
+	ptr = new ServerPacket_ClientJoinGame();
+
+	((ServerPacket_ClientJoinGame*)ptr)->packetID	=	7;
+	((ServerPacket_ClientJoinGame*)ptr)->clientID	=	m_sClientId;
+	((ServerPacket_ClientJoinGame*)ptr)->gameID		=	m_sCurGameId;
+
+	m_Client->SetBuffer(ptr);
+	m_Client->SendBuffer();
+
+	delete ptr;
+}
+
+void NetworkController::Server_SyncGame(){
+	void *ptr = NULL;
+
+	ptr = new ServerPacket_SyncGame();
+
+	((ServerPacket_SyncGame*)ptr)->packetID	=	8;
+	for(int i=0; i < 8; i++){
+		((ServerPacket_SyncGame*)ptr)->data[i].clientID		= i;
+		((ServerPacket_SyncGame*)ptr)->data[i].health		= 0x1;
+		((ServerPacket_SyncGame*)ptr)->data[i].moveFlags	= 0xf;
+		((ServerPacket_SyncGame*)ptr)->data[i].positionX	= 5.0f;
+		((ServerPacket_SyncGame*)ptr)->data[i].positionY	= 5.0f;
+		((ServerPacket_SyncGame*)ptr)->data[i].rotation		= 0.0f;
+	}
+
+	m_Client->SetBuffer(ptr);
+	m_Client->SendBuffer();
+
+	delete ptr;
+	ptr = NULL;
 }
 
 void NetworkController::TestServerPackets(){
@@ -207,7 +262,14 @@ void NetworkController::TestServerPackets(){
 	ptr = new ServerPacket_SyncGame();
 
 	((ServerPacket_SyncGame*)ptr)->packetID	=	8;
-	((ServerPacket_SyncGame*)ptr)->data;//	=	m_sClientId;
+	for(int i=0; i < 8; i++){
+		((ServerPacket_SyncGame*)ptr)->data[0].clientID		= i;
+		((ServerPacket_SyncGame*)ptr)->data[0].health		= 0x1;
+		((ServerPacket_SyncGame*)ptr)->data[0].moveFlags	= 0xf;
+		((ServerPacket_SyncGame*)ptr)->data[0].positionX	= 5.0f;
+		((ServerPacket_SyncGame*)ptr)->data[0].positionY	= 5.0f;
+		((ServerPacket_SyncGame*)ptr)->data[0].rotation		= 0.0f;
+	}
 
 	m_Client->SetBuffer(ptr);
 	m_Client->SendBuffer();
