@@ -126,10 +126,11 @@ void NetworkController::Update(float dt)
 {
 	static void*  ptr = NULL;
 	static float counter = 0;
+	static char move;
 	//static char g1, g2, g3, g4;
 
 	// every two seconds
-	if (counter > 2.0f){
+	if (true){
 		ptr = m_Client->GetReceiveBuff();
 		if (ptr){
 			//GetEntityById(0)->SetPosition(D3DXVECTOR3(packet->x, 0.0f, packet->y));
@@ -139,7 +140,7 @@ void NetworkController::Update(float dt)
 			char packId;
 			memcpy( &packId, ptr, sizeof(char));
 			//int id = packId >> 4;
-			int id = packId;
+			int id = packId & 0xf;
 
 			// Switch to determine server packets received
 			switch (id)
@@ -158,7 +159,7 @@ void NetworkController::Update(float dt)
 				((ServerPacket_SyncGame*)ptr);
 				break;
 			case 9:
-				((ServerPacket_MoveEvent*)ptr);
+				move = ((ServerPacket_MoveEvent*)ptr)->packetID & 0xf0;
 				break;
 			case 10:
 				((ServerPacket_FireEvent*)ptr);

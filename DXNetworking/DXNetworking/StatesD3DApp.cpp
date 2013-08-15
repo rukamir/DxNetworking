@@ -56,11 +56,15 @@ void ServerLobby::InitializeState(D3DApp* app)
 
 void ServerLobby::UpdateScene(D3DApp* app, float dt)
 {
-	static bool enterGameLobby = false;
+	static bool enterGameLobby;
+	enterGameLobby = false;
 	WMI->Update(dt);
 
-	if (gDInput->keyDown(DIK_1)){
+	if (gDInput->keyDown(DIK_2)){
 		app->ChangeState(2);
+	}
+	if (gDInput->keyDown(DIK_9)){
+		WMI->Server_SendPackets(6);
 	}
 
 	// if left click
@@ -68,15 +72,15 @@ void ServerLobby::UpdateScene(D3DApp* app, float dt)
 		if(WMI->IsOverMenuButton("Game 1")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game1Count"))->SetPlayerCount(1);
 			WMI->JoinGame(1);
-			WMI->Server_SendPackets(6);
-			WMI->Server_SendPackets(8);
+			//WMI->Server_SendPackets(6);
+			//WMI->Server_SendPackets(8);
 			enterGameLobby = true;
 			//app->ChangeState(2);
 		} else
 		if(WMI->IsOverMenuButton("Game 2")){
 			((PlayerDisplayCount*)WMI->GetMenuElemByTitle("Game2Count"))->SetPlayerCount(1);
 			WMI->JoinGame(2);
-			//enterGameLobby = true;
+			enterGameLobby = true;
 			//app->ChangeState(3);
 		} else
 		if(WMI->IsOverMenuButton("Game 3")){
@@ -165,6 +169,7 @@ void GameLobby::OnLostDevice(D3DApp* app)
 
 void GameLobby::LeaveState(D3DApp* app)
 {
+	WMI->m_SpriteMan->ClearAllSprites();
 	WMI->RemoveMenu();
 	WMI->ResetWorldManager();
 }

@@ -29,6 +29,8 @@ public:
 	void QuiteServer();
 	void SendPlayerMove(char moveFlags);
 
+	char CurrentGameId(){return m_sCurGameId;}
+
 	void Server_SyncLobby();
 	void Server_JoinGame();
 	void Server_SyncGame();
