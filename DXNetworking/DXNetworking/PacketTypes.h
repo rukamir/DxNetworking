@@ -3,6 +3,17 @@
 #include <D3dx9math.h>
 #include <stdio.h>
 
+////////////////////////////////////////////////
+///
+///	WARNING:
+///	packetID first 4 bits will be 0-15 and determine the packet type based on the IDs below
+///	On MOVE EVENT the last 4 bits will be encoded for the movement flags
+///	
+///	_ _ _ _ | _ _ _ _
+///	^ v < > | _ I D _
+///
+////////////////////////////////////////////////
+
 //#define CLIENT_JOIN_SERVER			0x0001
 //#define CLIENT_JOIN_GAME			0x0002
 //#define CLIENT_MOVE_EVENT			0x0004
@@ -16,17 +27,6 @@
 //#define SERVER_FIRE_EVENT			0x0400
 //#define SERVER_GAME_OVER			0x0800
 //#define SERVER_CLIENT_QUIT_GAME		0x1000
-
-////////////////////////////////////////////////
-///
-///	WARNING:
-///	packetID first 4 bits will be 0-15 and determine the packet type based on the IDs below
-///	On MOVE EVENT the last 4 bits will be encoded for the movement flags
-///	
-///	_ _ _ _ | _ _ _ _
-///	^ v < > | _ I D _
-///
-////////////////////////////////////////////////
 
 struct PlayerData
 {
