@@ -17,6 +17,7 @@ class WorldManager
 private:
 	std::vector<Entity*>		m_vEntities;
 	Entity*						ent;
+	unsigned short				m_sMenuId;
 
 public:
 	NetworkController			*m_NetControl;
@@ -30,6 +31,22 @@ public:
 
 	Entity*		CreateBall();
 	Entity*		CreateTiger();
+
+	// General Menu Controls
+	bool IsOverMenuButton(LPCSTR buttonTitle);
+	SpriteElements* GetMenuElemByTitle(LPCSTR buttonTitle);
+
+	// Server Menu
+	// Menu ID: 1
+	void CreateServerMenu();
+	// Menu ID: 2
+	void CreateGameLobbyMenu();
+
+	// Network Controls
+	void JoinGame(short gameId);
+	void QuitGame();
+	void Server_SendPackets(int packId);
+	void RemoveMenu();
 
 private:
 	int m_iNVID;								// next valid ID

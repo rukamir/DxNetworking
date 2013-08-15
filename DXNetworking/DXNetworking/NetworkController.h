@@ -12,21 +12,30 @@ class NetworkController
 private:
 	Entity							*m_Owner;
 	NetClient*						m_Client;
-	short							m_sClientId;
-	char							m_sClientName[28];
+	char							m_sClientId;
+	char							m_sClientName[30];
 	std::map<short, Entity*>		m_mEntMap;
 
-	short							m_sCurGameId;
+	char							m_sCurGameId;
 public:
+	char							lobby, g1, g2, g3, g4; // Holds players per game
 	NetworkController(void);
 	~NetworkController(void);
 
 	void JoinServer();
-	void JoinGame(short GameId);
-	void SendPlayerFire(short playerId);
+	void JoinGame(char GameId);
+	void SendPlayerFire(char playerId);
 	void QuiteGame();
 	void QuiteServer();
 	void SendPlayerMove(char moveFlags);
+
+	char CurrentGameId(){return m_sCurGameId;}
+
+	void Server_SyncLobby();
+	void Server_JoinGame();
+	void Server_SyncGame();
+
+
 
 	void TestServerPackets();
 

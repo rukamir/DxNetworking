@@ -327,8 +327,6 @@ void SpriteManager::Release()
 
 void SpriteManager::ClearAllSprites()
 {
-	this->Release();
-
 	//delete vector of pointers
 	//VectSprtElemShPtrs::iterator i = m_vectSprElem.begin();
 	//for (; i != m_vectSprElem.end(); i++)

@@ -18,10 +18,11 @@ WorldManager::WorldManager()
 	m_iNVID = 0;
 
 	//// Create Network Controller
-	//m_NetControl	=	new NetworkController();
+	m_NetControl	=	new NetworkController();
 
 	//// Send different packets
-	//m_NetControl->JoinServer();
+	m_NetControl->JoinServer();
+	//m_NetControl->TestServerPackets();
 	//m_NetControl->JoinGame(8);
 	//m_NetControl->SendPlayerMove((char)8);
 	////m_NetControl->SendPlayerFire(8);
@@ -78,6 +79,77 @@ Entity* WorldManager::CreateBall(){
 	return ent;
 }
 
+bool WorldManager::IsOverMenuButton(LPCSTR buttonTitle){
+	return myMenu->GetElemByTitle(buttonTitle)->IsOver(ghWnd);
+}
+
+SpriteElements* WorldManager::GetMenuElemByTitle(LPCSTR buttonTitle){
+	return myMenu->GetElemByTitle(buttonTitle);
+}
+
+void WorldManager::CreateServerMenu(){
+	m_sMenuId	= 1;
+	myMenu	=	new MenuObj(9999);
+	myMenu->SetText("ServerMenu");
+	myMenu->AddButton("Server List", D3DXVECTOR2(5.0f, 5.0f));
+	myMenu->AddButton("Players", D3DXVECTOR2(250.0f, 5.0f));
+	myMenu->AddButton("Lobby", D3DXVECTOR2(5.0f, 35.0f));
+	myMenu->AddPlayerCount("LobbyCount", D3DXVECTOR2(250.0f, 35.0f));
+
+	myMenu->AddButton("Game 1", D3DXVECTOR2(5.0f, 65.0f));
+	myMenu->AddPlayerCount("Game1Count", D3DXVECTOR2(250.0f, 65.0f));
+	myMenu->AddButton("Game 2", D3DXVECTOR2(5.0f, 95.0f));
+	myMenu->AddPlayerCount("Game2Count", D3DXVECTOR2(250.0f, 95.0f));
+	myMenu->AddButton("Game 3", D3DXVECTOR2(5.0f, 125.0f));
+	myMenu->AddPlayerCount("Game3Count", D3DXVECTOR2(250.0f, 125.0f));
+	myMenu->AddButton("Game 4", D3DXVECTOR2(5.0f, 155.0f));
+	myMenu->AddPlayerCount("Game4Count", D3DXVECTOR2(250.0f, 155.0f));
+
+	myMenu->SetPosition(D3DXVECTOR2(100.0f, 5.0f));
+}
+
+void WorldManager::CreateGameLobbyMenu(){
+	m_sMenuId	= 2;
+	myMenu	=	new MenuObj(9999);
+	myMenu->SetText("GameLobbyMenu");
+	myMenu->AddButton("Game Lobby", D3DXVECTOR2(5.0f, 5.0f));
+	myMenu->AddButton("Players", D3DXVECTOR2(250.0f, 5.0f));
+	myMenu->AddButton("Lobby", D3DXVECTOR2(5.0f, 35.0f));
+	myMenu->AddPlayerCount("LobbyCount", D3DXVECTOR2(250.0f, 35.0f));
+
+	myMenu->SetPosition(D3DXVECTOR2(100.0f, 5.0f));
+}
+
+void WorldManager::JoinGame(short gameId){
+	m_NetControl->JoinGame(gameId);
+}
+
+void WorldManager::QuitGame(){
+	m_NetControl->QuiteGame();
+}
+
+void WorldManager::RemoveMenu(){
+	m_sMenuId	= 0;
+	myMenu = NULL;
+}
+
+void WorldManager::Server_SendPackets(int packId){
+	switch (packId)
+	{
+	case 6:
+		m_NetControl->Server_SyncLobby();
+		break;
+	case 7:
+		m_NetControl->Server_JoinGame();
+		break;
+	case 8:
+		m_NetControl->Server_SyncGame();
+		break;
+	default:
+		break;
+	}
+}
+
 int WorldManager::GetNVID()
 {
 	m_iNVID++;
@@ -97,6 +169,25 @@ void WorldManager::Update(float dt)
 {
 	CAM->Update();
 	m_SpriteMan->Update(dt);
+	m_NetControl->Update(dt);
+
+	switch (m_sMenuId)
+	{
+	case 0:
+		break;
+	case 1:
+		((PlayerDisplayCount*)GetMenuElemByTitle("Game1Count"))->SetPlayerCount(m_NetControl->g1);
+		((PlayerDisplayCount*)GetMenuElemByTitle("Game2Count"))->SetPlayerCount(m_NetControl->g2);
+		((PlayerDisplayCount*)GetMenuElemByTitle("Game3Count"))->SetPlayerCount(m_NetControl->g3);
+		((PlayerDisplayCount*)GetMenuElemByTitle("Game4Count"))->SetPlayerCount(m_NetControl->g4);
+		((PlayerDisplayCount*)GetMenuElemByTitle("LobbyCount"))->SetPlayerCount(m_NetControl->lobby);
+		break;
+	case 2:
+		((PlayerDisplayCount*)GetMenuElemByTitle("LobbyCount"))->SetPlayerCount(m_NetControl->lobby);
+		break;
+	default:
+		break;
+	}
 
 	for(const auto &ents : m_vEntities){
 		ents->Update(dt);
@@ -121,38 +212,6 @@ void WorldManager::Update(float dt)
 
 void WorldManager::Render()
 {	
-//	  //render-to-texture
-//	  //set new render target
-//	  gD3DDev->SetRenderTarget(0,gTextureMan->pRenderSurface);
-//	  //clear texture
-//	  gD3DDev->Clear(0,
-//							   NULL,
-//							   D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
-//							   D3DCOLOR_XRGB(200,200,200),
-//							   1.0f,
-//							   0);
-//	  gD3DDev->BeginScene();
-//
-//	  //gD3DDev->SetTexture(0,gTextureMan->pRenderTexture);
-//	  D3DXMATRIX matRotationY;
-//	  D3DXMatrixRotationY(&matRotationY,D3DXToRadian(25.0f));
-//	  D3DXMATRIX matTranslation;
-//	  D3DXMatrixTranslation(&matTranslation,0.0f,0.0f,5.0f);
-//	  gD3DDev->SetTransform(D3DTS_WORLD,
-//									  &(matRotationY * matTranslation));
-//	  //set projection matrix
-//	  gD3DDev->SetTransform(D3DTS_PROJECTION,&CAM->GetProjectionMatrix());
-//
-//	  gD3DDev->SetStreamSource(0, myObj->m_VertBuff,0,sizeof(VertexPNT::Decl));
-//	  gD3DDev->DrawPrimitive(D3DPT_TRIANGLELIST,0,4);
-//
-//myObj->m_Shader->effect->SetTexture(((BasicShader*)myObj->m_Shader)->tex0, gTextureMan->pRenderTexture);
-//myObj->m_Shader->effect->CommitChanges();
-//
-//
-//	 gD3DDev->EndScene();
-
-
 	// Clear the backbuffer and depth buffer.
 	HR(gD3DDev->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 40, 100), 1.0f, 0));
 

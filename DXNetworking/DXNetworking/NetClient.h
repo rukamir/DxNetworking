@@ -3,9 +3,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <Winsock2.h>
-//#include <Windows.h>
-//#include <stdlib.h>
-//#include <stdio.h>
 
 #include "PacketTypes.h"
 
@@ -13,8 +10,6 @@
 #define DEFAULT_BUFLEN 512
 
 #pragma comment (lib, "Ws2_32.lib")
-//#pragma comment (lib, "Mswsock.lib")
-//#pragma comment (lib, "AdvApi32.lib")
 
 class NetClient
 {
