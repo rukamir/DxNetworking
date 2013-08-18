@@ -4,28 +4,16 @@
 
 NetworkController::NetworkController(void)
 {
-	m_sClientId					=	5;
+	m_sClientId					=	-1;
 	m_sCurGameId				=	0;
 	memcpy( m_sClientName, "Jimmy", 6);//				=	"Jimmy";
 	m_sClientName[sizeof(m_sClientName - 1)] = '\0';
 	m_Client = new NetClient();
-	//m_Client->SetServIP("192.168.1.101");
+	m_Client->SetServIP("192.168.1.104");
 	m_Client->Initialize();
 	m_Client->Connect();
 
 	ThrdCon->CreateNewThread(NetClient::listen_loop, ((void*)m_Client), false);
-
-	//void* myP = new Packet(1, 5, 5);
-	//Packet* myPack;
-	//memcpy( myP, myPack, sizeof(Packet));
-
-
-
-	//byte myByte[2] = (byte)myP << 8;
-
-
-	//short val = (val << 8) + myByte[1];
-	//val = (val << 8) + myByte[0];
 }
 
 NetworkController::~NetworkController(void)
@@ -102,7 +90,7 @@ void NetworkController::QuiteGame(){
 	m_Client->SetBuffer(ptr);
 	m_Client->SendBuffer();
 
-	delete ptr;
+	//delete ptr;
 	ptr = NULL;
 }
 
@@ -146,11 +134,16 @@ void NetworkController::Update(float dt)
 			switch (id)
 			{
 			case 6:
-				g1 = (0xf000 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 12;
-				g2 = (0xf00 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 8;
-				g3 = (0xf0 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 4;
-				g4 = (0xf & ((ServerPacket_SyncLobby*)ptr)->playersInGame);
+				if (m_sClientId != -1){
+				g1 = (0xf & ((ServerPacket_SyncLobby*)ptr)->playersInGame);
+				g2 = (0xf0 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 4;
+				g3 = (0xf00 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 8;
+				g4 = (0xf000 & ((ServerPacket_SyncLobby*)ptr)->playersInGame) >> 12;
 				lobby = (((ServerPacket_SyncLobby*)ptr)->playersInLobby);
+				} else {
+					m_sClientId = ((ServerPacket_SyncLobby*)ptr)->clientID;
+					JoinServer();
+				}
 				break;
 			case 7:
 				m_sCurGameId	=	((ServerPacket_ClientJoinGame*)ptr)->gameID;

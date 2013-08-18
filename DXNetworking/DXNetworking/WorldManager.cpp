@@ -21,7 +21,7 @@ WorldManager::WorldManager()
 	m_NetControl	=	new NetworkController();
 
 	//// Send different packets
-	m_NetControl->JoinServer();
+	//m_NetControl->JoinServer();
 	//m_NetControl->TestServerPackets();
 	//m_NetControl->JoinGame(8);
 	//m_NetControl->SendPlayerMove((char)8);
@@ -118,6 +118,10 @@ void WorldManager::CreateGameLobbyMenu(){
 	myMenu->AddPlayerCount("LobbyCount", D3DXVECTOR2(250.0f, 35.0f));
 
 	myMenu->SetPosition(D3DXVECTOR2(100.0f, 5.0f));
+}
+
+void WorldManager::JoinServer(){
+	m_NetControl->JoinServer();
 }
 
 void WorldManager::JoinGame(short gameId){

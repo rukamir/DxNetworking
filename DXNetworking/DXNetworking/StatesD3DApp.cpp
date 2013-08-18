@@ -151,6 +151,7 @@ void GameLobby::UpdateScene(D3DApp* app, float dt)
 	WMI->Update(dt);
 
 	if (gDInput->keyDown(DIK_1)){
+		WMI->QuitGame();
 		app->ChangeState(1);
 	}
 }

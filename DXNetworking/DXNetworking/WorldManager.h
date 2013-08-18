@@ -43,6 +43,7 @@ public:
 	void CreateGameLobbyMenu();
 
 	// Network Controls
+	void JoinServer();
 	void JoinGame(short gameId);
 	void QuitGame();
 	void Server_SendPackets(int packId);
